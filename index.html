@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약서 서명</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 사용자 정의 색상 구성 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#6B7280',
+                        accent: '#3B82F6',
+                        light: '#F3F4F6',
+                        dark: '#1F2937'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .contract-container {
+                max-width: 816px; /* A4 용지 너비 시뮬레이션 */
+            }
+            .signature-pad {
+                border: 2px dashed #ccc;
+                transition: all 0.3s ease;
+            }
+            .signature-pad:hover {
+                border-color: #165DFF;
+            }
+            .signature-pad.active {
+                border-style: solid;
+                border-color: #165DFF;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-dark">
+    <!-- 상단 내비게이션 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-primary">
+                <i class="fa fa-file-text-o mr-2"></i>계약서 서명 시스템
+            </h1>
+            <div class="flex space-x-3">
+                <button id="resetBtn" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors">
+                    <i class="fa fa-refresh mr-1"></i>재설정
+                </button>
+                <button id="saveBtn" class="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md transition-colors">
+                    <i class="fa fa-download mr-1"></i>계약 저장
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- 서명자 정보 -->
+        <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-xl font-semibold mb-4">서명자 정보</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label for="signerName2" class="block text-sm font-medium text-gray-700 mb-1">을방 이름</label>
+                    <input type="text" id="signerName2" placeholder="을방 이름을 입력해주세요"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                </div>
+                <div>
+                    <label for="signerId2" class="block text-sm font-medium text-gray-700 mb-1">을방 신분증 번호</label>
+                    <input type="text" id="signerId2" placeholder="을방 신분증 번호를 입력해주세요"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                </div>
+            </div>
+        </div>
+
+        <!-- 계약 내용 및 서명 구역 -->
+        <div class="contract-container mx-auto bg-white p-8 md:p-12 rounded-lg shadow-sm mb-8">
+            <!-- 계약 제목 -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2">비밀유지협약</h2>
+                <p class="text-gray-500 mb-2">협의 번호: 20250830629</p>
+            </div>
+            
+            <!-- 계약 본문 -->
+            <div class="space-y-4 text-gray-800 leading-relaxed">
+                <p>甲방（자녀를 원하는 측）：<u class="px-4">첸징이</u></p>
+                <p>甲방 신분증：<u class="px-4">KO787048N</u></p>
+                <p>을방（기증자 측）：<u class="px-4"></u></p>
+                <p>을방 신분증：<u class="px-4"></u></p>
+
+                <p class="my-4">갑과 을은 협력 과정에서 관련된 개인 프라이버시 및 정보를 비밀로 유지하기 위하여 상호 우호적인 협의를 거쳐 다음과 같은 협약을 체결한다：</p>
+                
+                <p class="font-semibold mt-6">제1조 비밀 유지 내용</p>
+                <p>1.1 협력 과정에서 양측이 공유하는 모든 개인 정보，의료 정보，연락처，신분 정보 및 기타 비공개 사적인 정보</p>
+                <p>1.2 협의 과정에서 논의된 모든 세부 사항，협력 방식，보수 금액，시간 일정 등을 포함하되 이에 국한되지 않음</p>
+                <p>1.3 갑방이 자연 임신에 성공할 경우（아기의 성별 불문），갑방은 을방에게 보수로 6억원을 지급해야 한다</p>
+                
+                <p class="font-semibold mt-6">제2조 비밀 유지 의무</p>
+                <p>2.1 갑과 을은 상대방의 비밀 정보를 제3자에게 누설하거나 공개하지 않을 책임을 진다</p>
+                <p>2.2 양측은 본 계약 이행 목적 범위 내에서만 비밀 정보를 사용해야 하며，기타 용도로 사용할 수 없다</p>
+                <p>2.3 을방은 갑방의 서면 동의 없이 계약 기간 동안 전체 서비스 과정과 결과를 제3자에게 누설해서는 안 된다</p>
+                
+                <p class="font-semibold mt-6">제3조 비밀 유지 협약금</p>
+                <p>3.1 을방은 계약 이행과 비밀 유지 의무를 보장하기 위하여 200만 원의 비밀 유지 협약금을 납부해야 한다</p>
+                <p>3.2 을방이 본 계약의 비밀 유지 조항을 위반할 경우，갑방은 협약금을 반환하지 않을 권리가 있으며，법적 책임을 추가로 물을 수 있다</p>
+                <p>3.3 을방이 협약금을 납부 완료한 이후 갑방은 당일 계약금 30%인 1억8천만 원을 을방에게 지급해야 한다</p>
+                <p>3.4 을방이 협약금 납부를 완료하지 않아 갑방에게 손해가 발생한 경우 을방은 해당 책임을 부담하고 손해를 배상해야 하며 계약 총액의 50%에 해당하는 위약금을 갑방에게 지급해야 한다</p>
+                <p>3.5 을방의 건강검진 비용 및 진정성 보증금은 갑방이 계약금 지급 시 함께 지급해야 한다</p>
+                
+                <p class="font-semibold mt-6">제4조 계약 기간</p>
+                <p>4.1 본 계약은 쌍방이 서명한 날로부터 발효되며 유효기간은 3년이다</p>
+                <p>4.2 계약 종료 후에도 비밀 유지 의무는 유효하며 갑방이 서면으로 해제할 때까지 지속된다</p>
+                
+                <p class="font-semibold mt-6">제5조 위약 책임</p>
+                <p>5.1 계약 당사자가 본 계약을 위반할 경우 발생한 모든 손실에 대해 법적 책임을 부담해야 한다</p>
+                <p>5.2 을방이 비밀 유지 협약금을 납부한 이후 본 협약 참여를 철회할 경우 협약금은 반환되지 않는다</p>
+                <p>5.3 비밀 정보를 타인에게 누설하거나 전체 또는 일부를 복제하는 행위를 금지한다</p>
+                
+                <p class="font-semibold mt-6">제6조 분쟁 해결</p>
+                <p>6.1 본 계약과 관련된 모든 분쟁은 우선 상호 협의를 통해 해결하며，협의가 실패할 경우 양측 관할 법원에 소송을 제기할 수 있다</p>
+                <p>6.2 협의가 실패할 경우，갑방의 관할 법원에 소송 제기 가능</p>
+                <p>6.3 을방은 갑방의 비밀 정보를 보유하거나 외부로 복제하는 것을 금지한다</p>
+                
+                <p class="font-semibold mt-6">제7조 기타 조항</p>
+                <p>7.1 본 계약은 2부 작성되며，갑과 을이 각각 1부씩 보관하며 동일한 법적 효력을 가진다</p>
+                <p>7.2 본 계약에 명시되지 않은 사항은 양측의 추가 협의를 통해 별도 계약으로 정하며 본 계약과 동일한 효력을 가진다</p>
+            </div>
+            
+            <!-- 서명 구역 -->
+            <div class="mt-16">
+                <div class="border-t-2 border-gray-200 pt-8">
+                    <div class="grid grid-cols-1 gap-8">
+                        
+                        
+                        <!-- 을방 서명 구역 -->
+                        <div class="border border-gray-200 p-4 md:p-6 rounded-lg bg-gray-50">
+                            <!-- <h3 class="text-lg font-semibold mb-4">을방 서명구역</h3> -->
+                            <div class="space-y-4 mb-6">
+                                <p class="text-sm text-gray-600">이름:</p>
+                            </div>
+                            <div id="signaturePad2" class="signature-pad w-full h-36 mb-4 bg-white"></div>
+                            <div class="flex flex-col space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>서명일자:</span>
+                                    <span id="signDate2">_____________</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 갑방 서명 구역 -->
+                        <div class="border border-gray-200 p-4 md:p-6 rounded-lg bg-gray-50 h-48 flex flex-col justify-between">
+                            <!-- <h3 class="text-lg font-semibold mb-4">갑방 서명구역</h3> -->
+                            <div class="space-y-4">
+                                <p class="text-sm text-gray-600">태오법률사무소</p>
+                            </div>
+                            <div class="flex flex-col space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>서명일자:</span>
+                                    <span id="signDate1">_____________</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 사용법 -->
+        <div class="bg-white p-6 rounded-lg shadow-sm mb-8 max-w-2xl mx-auto">
+            <h3 class="text-xl font-semibold mb-3 flex items-center">
+                <i class="fa fa-info-circle text-primary mr-2"></i>사용법
+            </h3>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span>서명区域内에서 마우스/손가락을 누른 채로 드래그하여 서명</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span>서명자 정보를 입력하면 서명구역 하단에 자동으로 표시됨</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span>"재설정" 버튼을 클릭하면 현재 서명을 지울 수 있음</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span>"계약 저장" 버튼을 클릭하면 서명된 계약을 이미지로 저장할 수 있음</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>간단한 계약서 서명 도구 &copy; 2023</p>
+            <!-- <p class="text-gray-400 text-sm mt-1">참고: 이 도구는 시연용으로만 사용되며 법적 효력이 없음</p> -->
+        </div>
+    </footer>
+
+    <!-- 성공 알림 모달 -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full transform transition-all">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-check text-2xl text-green-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">저장 성공</h3>
+                <p class="text-gray-600 mb-4">계약이 이미지로 성공적으로 저장됨</p>
+                <button id="closeModal" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 협의 번호 생성
+        function generateNegotiationNumber() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `${year}${month}${day}${random}`;
+        }
+        
+        // 체결일자 형식화
+        function formatSigningDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            return `${year}년 ${month}월 ${day}일`;
+        }
+        
+        // 현재 날짜 가져오기
+        function getCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            return `${year}년 ${month}월 ${day}일`;
+        }
+        
+        // 기본 날짜를 오늘로 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 협의 번호 및 체결일자 동적 생성
+            const negotiationNumber = generateNegotiationNumber();
+            const signingDate = formatSigningDate();
+            
+            // 페이지 표시 업데이트
+            document.querySelector('p.text-gray-500.mb-2').textContent = `협의 번호: ${negotiationNumber}`;
+            
+            // 갑방 서명일자 자동 설정
+            const currentDate = getCurrentDate();
+            document.getElementById('signDate1').textContent = currentDate;
+            
+            // 을방 서명판 초기화
+            initSignaturePad('signaturePad2', 'signerName2', 'signDate2');
+            
+            // 재설정 버튼 이벤트
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                if(confirm('모든 서명을 지우시겠습니까?')) {
+                    resetSignaturePad('signaturePad2');
+                }
+            });
+            
+            // 저장 버튼 이벤트
+            document.getElementById('saveBtn').addEventListener('click', saveContractAsImage);
+            
+            // 모달 닫기
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('successModal').classList.add('hidden');
+            });
+            
+            // 서명자 정보 변경 감지 및 표시 업데이트
+            document.getElementById('signerName2').addEventListener('input', updateSignerInfo);
+            document.getElementById('signerId2').addEventListener('input', updateSignerInfo);
+        });
+        
+        // 현재 활성화된 서명판
+        let activeCanvas = null;
+        
+        // 서명판 초기화
+        function initSignaturePad(padId, nameElementId, dateElementId) {
+            const padElement = document.getElementById(padId);
+            
+            // 서명판으로 canvas 요소 생성
+            const canvas = document.createElement('canvas');
+            canvas.id = padId + 'Canvas';
+            canvas.width = padElement.offsetWidth;
+            canvas.height = padElement.offsetHeight;
+            canvas.className = 'w-full h-full';
+            
+            // canvas 비우기 및 추가
+            padElement.innerHTML = '';
+            padElement.appendChild(canvas);
+            
+            // 2D 컨텍스트 가져오기
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // 서명 상태 변수
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            
+            // 마우스/터치 이벤트 처리 함수
+            function startDrawing(e) {
+                isDrawing = true;
+                activeCanvas = canvas;
+                
+                // 다양한 장치를 위한 시작점 설정
+                if (e.type.includes('mouse')) {
+                    [lastX, lastY] = [e.offsetX, e.offsetY];
+                } else {
+                    const rect = canvas.getBoundingClientRect();
+                    [lastX, lastY] = [
+                        e.touches[0].clientX - rect.left,
+                        e.touches[0].clientY - rect.top
+                    ];
+                }
+                
+                padElement.classList.add('active');
+            }
+            
+            function draw(e) {
+                if (!isDrawing || activeCanvas !== canvas) return;
+                
+                e.preventDefault();
+                
+                let currentX, currentY;
+                
+                // 현재 좌표 가져오기
+                if (e.type.includes('mouse')) {
+                    [currentX, currentY] = [e.offsetX, e.offsetY];
+                } else {
+                    const rect = canvas.getBoundingClientRect();
+                    [currentX, currentY] = [
+                        e.touches[0].clientX - rect.left,
+                        e.touches[0].clientY - rect.top
+                    ];
+                }
+                
+                // 선 그리기
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+                
+                // 마지막 좌표 업데이트
+                [lastX, lastY] = [currentX, currentY];
+            }
+            
+            function stopDrawing() {
+                isDrawing = false;
+                padElement.classList.remove('active');
+            }
+            
+            // 이벤트 리스너 추가
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // 터치 장치 지원
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            // 관련 요소 참조 저장
+            canvas.signatureData = {
+                nameElement: document.getElementById(nameElementId),
+                dateElement: document.getElementById(dateElementId),
+                padElement: padElement
+            };
+            
+            // 초기 서명자 정보 업데이트
+            updateSignerInfo();
+            
+            // 초기화 시 현재 날짜 설정
+            const currentDate = getCurrentDate();
+            if (canvas.signatureData) {
+                canvas.signatureData.dateElement.textContent = currentDate;
+            }
+            
+            // 서명 구역의 서명일자 표시 업데이트
+            document.getElementById(dateElementId).textContent = currentDate;
+        }
+        
+        // 서명판 재설정
+        function resetSignaturePad(padId) {
+            const canvas = document.getElementById(padId + 'Canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        
+        // 서명자 정보 표시 업데이트
+        function updateSignerInfo() {
+            const signerName2 = document.getElementById('signerName2').value;
+            const signerId2 = document.getElementById('signerId2').value;
+            
+            // 을방 서명 구역 정보 표시 업데이트
+            const canvas2 = document.getElementById('signaturePad2Canvas');
+            if (canvas2 && canvas2.signatureData && signerName2) {
+                canvas2.signatureData.nameElement.textContent = `서명인: ${signerName2}`;
+            }
+            
+            // 계약 본문의 을방 정보 업데이트
+            // "을방（기증자 측）"을 포함하는 단락을 찾은 다음 u 태그를 찾음
+            const contractParagraphs = document.querySelectorAll('.contract-container .space-y-4 p');
+            let contractPartyBName = null;
+            let contractPartyBId = null;
+            
+            for (let i = 0; i < contractParagraphs.length; i++) {
+                if (contractParagraphs[i].textContent.includes('을방（기증자 측）')) {
+                    contractPartyBName = contractParagraphs[i].querySelector('u');
+                }
+                if (contractParagraphs[i].textContent.includes('을방 신분증')) {
+                    contractPartyBId = contractParagraphs[i].querySelector('u');
+                }
+            }
+            
+            if (contractPartyBName) {
+                contractPartyBName.textContent = signerName2 || '';
+            }
+            
+            if (contractPartyBId) {
+                contractPartyBId.textContent = signerId2 || '';
+            }
+            
+            // 을방 서명 구역 상세 정보 표시 업데이트
+            // 을방 서명 구역의 이름 및 신분증 번호 표시 요소 선택
+            const partyBSignatureSection = document.querySelector('#signaturePad2').closest('.border-gray-200.bg-gray-50');
+            if (partyBSignatureSection) {
+                const partyBInfoElements = partyBSignatureSection.querySelectorAll('.space-y-4 p');
+                if (partyBInfoElements.length >= 1) {
+                    // 을방 이름 표시 업데이트
+                    partyBInfoElements[0].innerHTML = `이름: ${signerName2 || ''}`;
+                }
+            }
+            
+            // 서명일자를 현재 날짜로 자동 업데이트
+            const currentDate = getCurrentDate();
+            // 을방 서명일자 업데이트
+            if (canvas2 && canvas2.signatureData) {
+                canvas2.signatureData.dateElement.textContent = currentDate;
+            }
+            
+            // 을방 서명 구역의 서명일자 표시 업데이트
+            document.getElementById('signDate2').textContent = currentDate;
+        }
+        
+        // 계약을 이미지로 저장
+        function saveContractAsImage() {
+            // 서명 여부 확인 (을방 서명만 확인)
+            const hasSignature2 = isCanvasEmpty('signaturePad2Canvas');
+            
+            if (!hasSignature2) {
+                alert('을방 서명을 완료해주세요');
+                return;
+            }
+            
+            // 서명인 이름 입력 여부 확인
+            if (!document.getElementById('signerName2').value) {
+                alert('서명인 이름을 입력해주세요');
+                return;
+            }
+            
+            // HTML을 이미지로 변환하기 위해 html2canvas 라이브러리 포함
+            const script = document.createElement('script');
+            script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+            script.onload = function() {
+                const contractElement = document.querySelector('.contract-container');
+                
+                // 변환 옵션 구성
+                html2canvas(contractElement, {
+                    scale: 2, // 해상도 향상
+                    useCORS: true,
+                    logging: false
+                }).then(canvas => {
+                    // 다운로드 링크 생성
+                    const link = document.createElement('a');
+                    const signerName = document.getElementById('signerName2').value || '서명자';
+                    const signerId = document.getElementById('signerId2').value || 'ID';
+                    link.download = `계약_${signerName}_${signerId}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    // 성공 알림 표시
+                    document.getElementById('successModal').classList.remove('hidden');
+                });
+            };
+            
+            document.body.appendChild(script);
+        }
+        
+        // Canvas가 비어 있는지 확인
+        function isCanvasEmpty(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return false;
+            
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // 그림 그리기 내용 확인
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                // 투명하지 않은 픽셀 확인
+                if (imageData.data[i + 3] !== 0) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
